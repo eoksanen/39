@@ -71,12 +71,19 @@ let notes = [
   app.post('/api/notes', (request, response) => {
     const body = request.body
   
-    if (!body.name) {
-      return response.status(400).json({ 
-        error: 'content missing' 
+    if (!body.name || !body.number){
+      
+      return response.status(400).json({
+        error: "missing name or number"
       })
     }
-  
+    else if (notes.map(n => n.name).indexOf(body.name) >= 0 ){
+
+      return response.status(400).json({
+        error: "name must be unique"
+      })
+  }
+  else{
     const note = {
       name: body.name,
       number: body.number || false,
@@ -86,7 +93,8 @@ let notes = [
     notes = notes.concat(note)
   
     response.json(note)
-  })
+  }
+})
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
