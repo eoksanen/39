@@ -1,0 +1,21 @@
+{
+  "name": "notebackend",
+  "version": "1.0.0",
+  "description": "notebackend",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo hello",
+    "dev": "nodemon index.js"
+  },
+  "author": "eo",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.3"
+  }
+}
