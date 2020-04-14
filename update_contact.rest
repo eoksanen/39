@@ -1,0 +1,7 @@
+PUT http://localhost:3001/api/persons/5e943e276912ac6240b1c9aa
+Content-Type: application/json
+
+{
+    "name":"Lasse Lehtinen",
+    "number":"0700-770077",
+}
