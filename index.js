@@ -16,24 +16,44 @@ morgan.token('body', function getBody (req) {
   return JSON.stringify( req.body )
 })
 
-app.post('/api/persons', (request, response) => {
-  const body = request.body
+app.post('/api/persons', (request, response, next) => {
+  const body = request.body || 
+  
+  Person.findOne({name: body.name}).then(p => {
 
+  
+    return console.log(body.name === p.name) 
+  }).catch(error => next(error))
+  
+  console.log(typeof(body.name))
   if (body.name === undefined || body.number === undefined){
     
     return response.status(400).json({
       error: "missing name or number"
     })
   }
-  
-  else if (persons.map(n => n.name).indexOf(body.name) >= 0 ){
+      
+  else if (Person.findOne({name: body.name}).then(p => {
 
-    return response.status(400).json({
+    if (p.name === undefined){
+      return false
+    }
+    else{
+      return body.name === p.name
+        }
+    })
+    .catch(error => {
+      console.log('VIRHE ',error)
+      response.status(404).end()
+    })
+    ){
+      return response.status(400).json({
       error: "name must be unique"
     })
 }
 
 else{
+  
   const person = new Person ({
     name: body.name,
     number: body.number || false,
@@ -43,6 +63,7 @@ else{
     console.log('Contact saved!')
     response.json(savedPerson.toJSON())
     })
+    .catch(error => next(error))
 
   }
 })
@@ -81,6 +102,7 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
     })
  
 app.put('/api/persons/:id', (request, response, next) => {
+  const body = request.body
 
   const person = {
     name: body.name,
@@ -105,6 +127,9 @@ app.put('/api/persons/:id', (request, response, next) => {
   
     if (error.name === 'CastError' && error.kind == 'ObjectId') {
       return response.status(400).send({ error: 'malformatted id' })
+    }
+    else if (error.name === 'ValidationError') {
+      return response.status(400).json({ error: error.message})
     }
   
     next(error)
