@@ -17,10 +17,9 @@ morgan.token('body', function getBody (req) {
 })
 
 app.post('/api/persons', (request, response, next) => {
-  const body = request.body || 
+  const body = request.body
   
   Person.findOne({name: body.name}).then(p => {
-
   
     return console.log(body.name === p.name) 
   }).catch(error => next(error))
@@ -33,20 +32,20 @@ app.post('/api/persons', (request, response, next) => {
     })
   }
       
-  else if (Person.findOne({name: body.name}).then(p => {
+  else if (Person.findOne({name: body.name}.then(err, p => {
 
-    if (p.name === undefined){
-      return false
+    if (p.name){
+      return body.name === p.name
     }
     else{
-      return body.name === p.name
+      return false
         }
     })
     .catch(error => {
       console.log('VIRHE ',error)
       response.status(404).end()
     })
-    ){
+    )){
       return response.status(400).json({
       error: "name must be unique"
     })
